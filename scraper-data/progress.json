@@ -1,0 +1,66 @@
+{
+  "general_knowledge_mcqs": {
+    "lastPage": 5,
+    "totalScraped": 46
+  },
+  "pakistan-current-affairs-mcqs": {
+    "lastPage": 5,
+    "totalScraped": 50
+  },
+  "world-current-affairs-mcqs": {
+    "lastPage": 4,
+    "totalScraped": 37
+  },
+  "pak-study-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 13
+  },
+  "islamic-studies-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 20
+  },
+  "everyday-science-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 20
+  },
+  "english-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 20
+  },
+  "mathematics-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 19
+  },
+  "computer-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 20
+  },
+  "pedagogy-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 20
+  },
+  "physics-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 19
+  },
+  "chemistry-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 20
+  },
+  "biology-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 19
+  },
+  "urdu-general-knowledge": {
+    "lastPage": 2,
+    "totalScraped": 20
+  },
+  "psychology-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 20
+  },
+  "agriculture-mcqs": {
+    "lastPage": 2,
+    "totalScraped": 20
+  }
+}

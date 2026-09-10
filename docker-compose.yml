@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+
+  # ─── Next.js Application (Bun runtime) ─────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcqs-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/db/custom.db
+    volumes:
+      # Persist the SQLite database so it survives container restarts
+      - mcqs-db:/app/db
+    expose:
+      - "3000"
+    networks:
+      - mcqs-net
+
+  # ─── Caddy Reverse Proxy ───────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: mcqs-caddy
+    restart: unless-stopped
+    ports:
+      - "81:81"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+    networks:
+      - mcqs-net
+
+volumes:
+  mcqs-db:       # Named volume for SQLite persistence
+  caddy-data:    # Caddy TLS certificates & data
+  caddy-config:  # Caddy runtime config
+
+networks:
+  mcqs-net:
+    driver: bridge

@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String   @default("")
+  icon        String   @default("📚")
+  order       Int      @default(0)
+  mcqs        Mcq[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Mcq {
+  id            String   @id @default(cuid())
+  question      String
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+  correctAnswer String   @default("")
+  categorySlug  String
+  category      Category @relation(fields: [categorySlug], references: [slug])
+  sourceUrl     String   @default("")
+  submittedBy   String   @default("")
+  difficulty    String   @default("medium")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
