@@ -24,8 +24,13 @@ export async function GET() {
         mcqCount: cat._count.mcqs
       }))
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching categories:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch categories' }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Failed to fetch categories',
+      details: error?.message || String(error),
+      stack: error?.stack || null
+    }, { status: 500 });
   }
 }
