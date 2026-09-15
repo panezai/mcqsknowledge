@@ -143,10 +143,14 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <main className="flex-1 container mx-auto px-4 py-6">
           <CategoryPageClient
             category={categoryData}
-            initialMcqs={mcqsData}
-            initialPage={page}
-            totalPages={totalPages}
-            allCategories={allCategoriesData}
+            mcqs={mcqsData}
+            categories={allCategoriesData}
+            pagination={{
+              page,
+              totalPages,
+              total: totalMcqs,
+              limit,
+            }}
           />
         </main>
         <Footer />
