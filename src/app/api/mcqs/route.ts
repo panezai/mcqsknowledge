@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { Prisma } from '@prisma/client';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     // If just counting
     if (count === 'true') {
-      const where: Prisma.McqWhereInput = {};
+      const where: any = {};
       if (category) where.categorySlug = category;
       if (search) {
         where.OR = [
@@ -29,7 +31,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: true, total });
     }
 
-    const where: Prisma.McqWhereInput = {};
+    const where: any = {};
     if (category) where.categorySlug = category;
     if (search) {
       where.OR = [
@@ -46,29 +48,24 @@ export async function GET(request: NextRequest) {
       const randomLimit = limit > 50 ? 50 : limit;
       const allMcqs = await db.mcq.findMany({
         where,
-        select: { id: true }
       });
 
       // Shuffle and pick
-      const shuffled = allMcqs.sort(() => Math.random() - 0.5);
-      const selectedIds = shuffled.slice(0, randomLimit).map(m => m.id);
-
-      const mcqs = await db.mcq.findMany({
-        where: { id: { in: selectedIds } },
-        include: { category: { select: { name: true, slug: true, icon: true } } },
-        orderBy: Prisma.raw('RANDOM()')
-      });
+      const shuffled = [...allMcqs].sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, randomLimit);
 
       // Don't send correct answers for quiz mode
-      const safeMcqs = mcqs.map(({ correctAnswer, ...rest }) => ({
+      const safeMcqs = selected.map(({ correctAnswer, ...rest }: any) => ({
         ...rest,
+        categoryName: rest.category?.name || '',
+        categoryIcon: rest.category?.icon || '📚',
         hasAnswer: !!correctAnswer
       }));
 
       return NextResponse.json({
         success: true,
         data: safeMcqs,
-        total: selectedIds.length
+        total: safeMcqs.length
       });
     }
 
@@ -88,7 +85,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: mcqs.map(mcq => ({
+      data: mcqs.map((mcq: any) => ({
         id: mcq.id,
         question: mcq.question,
         optionA: mcq.optionA,
@@ -97,8 +94,8 @@ export async function GET(request: NextRequest) {
         optionD: mcq.optionD,
         correctAnswer: mcq.correctAnswer,
         categorySlug: mcq.categorySlug,
-        categoryName: mcq.category.name,
-        categoryIcon: mcq.category.icon,
+        categoryName: mcq.category?.name || '',
+        categoryIcon: mcq.category?.icon || '📚',
         submittedBy: mcq.submittedBy,
         createdAt: mcq.createdAt,
         hasAnswer: !!mcq.correctAnswer
@@ -110,8 +107,12 @@ export async function GET(request: NextRequest) {
         totalPages: Math.ceil(total / limit)
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching MCQs:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch MCQs' }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Failed to fetch MCQs',
+      details: error?.message || String(error)
+    }, { status: 500 });
   }
 }
