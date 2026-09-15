@@ -6,10 +6,12 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: false,
   outputFileTracingIncludes: {
-    '/**': ['./db/custom.db', './prisma/**/*'],
+    '/**/*': ['./db/custom.db', './db/**/*'],
+    '/api/**/*': ['./db/custom.db', './db/**/*'],
   },
 };
 
 export default nextConfig;
+
 
 
