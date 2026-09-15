@@ -1,4 +1,4 @@
-import dbData from '../data/db.json';
+import { dbData } from '@/data/dbData';
 
 export interface Category {
   id: string;
