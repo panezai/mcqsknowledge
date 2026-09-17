@@ -6,8 +6,8 @@ import re
 import os
 import glob
 
-DATA_DIR = os.environ.get('DATA_DIR', '/app/scraper-data')
-OUTPUT_FILE = os.environ.get('OUTPUT_FILE', '/app/scraper-data/mcqs.json')
+DATA_DIR = os.environ.get('DATA_DIR', 'scraper-data')
+OUTPUT_FILE = os.environ.get('OUTPUT_FILE', 'scraper-data/mcqs.json')
 
 # Category mapping from file names
 FILE_CATEGORY_MAP = {
@@ -179,7 +179,7 @@ def main():
         category_name, category_slug = FILE_CATEGORY_MAP[cat_key]
         
         try:
-            with open(filename) as f:
+            with open(filename, encoding='utf-8') as f:
                 data = json.load(f)
             
             html = data.get('data', {}).get('html', '')
@@ -201,7 +201,7 @@ def main():
             print(f"Error processing {basename}: {e}")
     
     # Save results
-    with open(OUTPUT_FILE, 'w') as f:
+    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         json.dump(all_mcqs, f, indent=2)
     
     # Print stats

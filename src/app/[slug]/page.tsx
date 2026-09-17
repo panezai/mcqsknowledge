@@ -1,6 +1,4 @@
 import { db } from '@/lib/db';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { CategoryPageClient } from '@/components/CategoryPageClient';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -33,10 +31,10 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       title: `${category.name} - PakMCQs`,
       description: `${category._count.mcqs} ${displayName} MCQs for test preparation`,
       type: 'website',
-      url: `https://mcqsworld.space-z.ai/${slug}`,
+      url: `https://www.mcqsknowledge.com/${slug}`,
     },
     alternates: {
-      canonical: `https://mcqsworld.space-z.ai/${slug}`,
+      canonical: `https://www.mcqsknowledge.com/${slug}`,
     },
   };
 }
@@ -114,8 +112,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://mcqsworld.space-z.ai' },
-          { '@type': 'ListItem', position: 2, name: category.name, item: `https://mcqsworld.space-z.ai/${slug}` },
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.mcqsknowledge.com' },
+          { '@type': 'ListItem', position: 2, name: category.name, item: `https://www.mcqsknowledge.com/${slug}` },
         ],
       },
       {
@@ -138,23 +136,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 container mx-auto px-4 py-6">
-          <CategoryPageClient
-            category={categoryData}
-            mcqs={mcqsData}
-            categories={allCategoriesData}
-            pagination={{
-              page,
-              totalPages,
-              total: totalMcqs,
-              limit,
-            }}
-          />
-        </main>
-        <Footer />
-      </div>
+      <CategoryPageClient
+        category={categoryData}
+        mcqs={mcqsData}
+        categories={allCategoriesData}
+        pagination={{
+          page,
+          totalPages,
+          total: totalMcqs,
+          limit,
+        }}
+      />
     </>
   );
 }

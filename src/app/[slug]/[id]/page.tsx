@@ -1,6 +1,4 @@
 import { db } from '@/lib/db';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { McqDetailClient } from '@/components/McqDetailClient';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -26,10 +24,10 @@ export async function generateMetadata({ params }: McqDetailPageProps): Promise<
       title: `${displayName} MCQ - PakMCQs`,
       description: mcq.question.substring(0, 200),
       type: 'website',
-      url: `https://mcqsworld.space-z.ai/${slug}/${id}`,
+      url: `https://www.mcqsknowledge.com/${slug}/${id}`,
     },
     alternates: {
-      canonical: `https://mcqsworld.space-z.ai/${slug}/${id}`,
+      canonical: `https://www.mcqsknowledge.com/${slug}/${id}`,
     },
   };
 }
@@ -113,9 +111,9 @@ export default async function McqDetailPage({ params }: McqDetailPageProps) {
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://mcqsworld.space-z.ai' },
-          { '@type': 'ListItem', position: 2, name: mcq.category.name, item: `https://mcqsworld.space-z.ai/${slug}` },
-          { '@type': 'ListItem', position: 3, name: 'Question', item: `https://mcqsworld.space-z.ai/${slug}/${id}` },
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.mcqsknowledge.com' },
+          { '@type': 'ListItem', position: 2, name: mcq.category.name, item: `https://www.mcqsknowledge.com/${slug}` },
+          { '@type': 'ListItem', position: 3, name: 'Question', item: `https://www.mcqsknowledge.com/${slug}/${id}` },
         ],
       },
       {
@@ -143,18 +141,12 @@ export default async function McqDetailPage({ params }: McqDetailPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 container mx-auto px-4 py-6">
-          <McqDetailClient
-            mcq={mcqData}
-            prevMcq={prevMcq}
-            nextMcq={nextMcq}
-            relatedMcqs={relatedMcqs}
-          />
-        </main>
-        <Footer />
-      </div>
+      <McqDetailClient
+        mcq={mcqData}
+        prevMcq={prevMcq}
+        nextMcq={nextMcq}
+        relatedMcqs={relatedMcqs}
+      />
     </>
   );
 }

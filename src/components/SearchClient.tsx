@@ -75,7 +75,7 @@ export function SearchClient({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" suppressHydrationWarning>
       {/* Search Header */}
       <div className="bg-gradient-to-r from-[#007540] to-[#005e33] rounded-xl p-6 text-white">
         <h1 className="text-2xl font-bold mb-3">Search MCQs</h1>

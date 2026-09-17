@@ -15,16 +15,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.mcqsknowledge.com"),
   title: "MCQs Knowledge - Pakistan's Largest MCQs Website",
   description: "MCQs Knowledge is Pakistan's largest MCQs website. Prepare for NTS, FPSC, PPSC, BPSC, SPSC tests with our comprehensive collection of multiple choice questions across 37+ subjects.",
   keywords: ["MCQs Knowledge", "MCQs", "NTS", "FPSC", "PPSC", "Pakistan", "Quiz", "Test Preparation", "General Knowledge", "Islamic Studies", "Pak Study"],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
   openGraph: {
     title: "MCQs Knowledge - Pakistan's Largest MCQs Website",
     description: "Prepare for NTS, FPSC, PPSC tests with comprehensive MCQs",
+    url: "https://www.mcqsknowledge.com",
+    siteName: "MCQs Knowledge",
     type: "website",
+  },
+  alternates: {
+    canonical: "https://www.mcqsknowledge.com",
   },
 };
 
@@ -36,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f9fafc] text-foreground`}
       >
         <AppShell>

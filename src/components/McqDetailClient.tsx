@@ -20,8 +20,6 @@ import {
   ChevronRight,
   ExternalLink,
   Copy,
-  Loader2,
-  Sparkles,
 } from 'lucide-react';
 
 interface McqDetail {
@@ -57,8 +55,6 @@ interface McqDetailClientProps {
 
 export function McqDetailClient({ mcq, prevMcq, nextMcq, relatedMcqs }: McqDetailClientProps) {
   const [showAnswer, setShowAnswer] = useState(!!mcq.correctAnswer);
-  const [generating, setGenerating] = useState(false);
-  const [generatedAnswer, setGeneratedAnswer] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const options = [
@@ -68,36 +64,12 @@ export function McqDetailClient({ mcq, prevMcq, nextMcq, relatedMcqs }: McqDetai
     { letter: 'D', text: mcq.optionD },
   ];
 
-  const effectiveAnswer = mcq.correctAnswer || generatedAnswer || '';
+  const effectiveAnswer = mcq.correctAnswer || '';
 
   const correctLetter = effectiveAnswer
-    ? options.find(o => o.text.trim().toLowerCase() === effectiveAnswer.trim().toLowerCase())?.letter || ''
+    ? options.find(o => o.text.trim().toLowerCase() === effectiveAnswer.trim().toLowerCase())?.letter ||
+      (options.some(o => o.letter === effectiveAnswer.trim().toUpperCase()) ? effectiveAnswer.trim().toUpperCase() : '')
     : '';
-
-  const handleGenerateAnswer = async () => {
-    setGenerating(true);
-    try {
-      const res = await fetch('/api/answers/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mcqIds: [mcq.id], limit: 1 }),
-      });
-      const data = await res.json();
-      if (data.success && data.updated > 0) {
-        // Re-fetch the MCQ to get the updated answer
-        const mcqRes = await fetch(`/api/mcqs/${mcq.id}`);
-        const mcqData = await mcqRes.json();
-        if (mcqData.success && mcqData.data.correctAnswer) {
-          setGeneratedAnswer(mcqData.data.correctAnswer);
-          setShowAnswer(true);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to generate answer:', err);
-    } finally {
-      setGenerating(false);
-    }
-  };
 
   const handleShare = async () => {
     const url = window.location.href;
@@ -132,7 +104,7 @@ export function McqDetailClient({ mcq, prevMcq, nextMcq, relatedMcqs }: McqDetai
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" suppressHydrationWarning>
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1 text-sm text-gray-500 flex-wrap">
         <Link href="/" className="hover:text-[#007540]">Home</Link>
@@ -206,9 +178,9 @@ export function McqDetailClient({ mcq, prevMcq, nextMcq, relatedMcqs }: McqDetai
             })}
           </div>
 
-          {/* Answer reveal / generate */}
+          {/* Answer reveal */}
           <div className="mt-4 flex items-center gap-2 flex-wrap">
-            {effectiveAnswer && !showAnswer && (
+            {!showAnswer && (
               <Button
                 onClick={() => setShowAnswer(true)}
                 className="bg-[#007540] hover:bg-[#005e33]"
@@ -216,25 +188,21 @@ export function McqDetailClient({ mcq, prevMcq, nextMcq, relatedMcqs }: McqDetai
                 <CheckCircle2 className="h-4 w-4 mr-2" /> Show Answer
               </Button>
             )}
-            {!effectiveAnswer && !generating && (
-              <Button
-                onClick={handleGenerateAnswer}
-                variant="outline"
-                className="text-[#007540] border-[#007540]/30 hover:bg-[#007540]/10"
-              >
-                <Sparkles className="h-4 w-4 mr-2" /> Generate Answer with AI
-              </Button>
-            )}
-            {generating && (
-              <Button disabled variant="outline">
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating...
-              </Button>
-            )}
-            {showAnswer && effectiveAnswer && (
-              <div className="w-full mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+            {showAnswer && (
+              <div className="w-full mt-2 p-3 bg-green-50 border border-green-200 rounded-lg flex justify-between items-center">
                 <p className="text-sm font-semibold text-green-800">
-                  Correct Answer: {correctLetter}. {effectiveAnswer}
+                  {effectiveAnswer
+                    ? `Correct Answer: ${correctLetter ? `${correctLetter}. ` : ''}${effectiveAnswer}`
+                    : 'Answer not available'}
                 </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAnswer(false)}
+                  className="text-xs text-green-700 hover:text-green-900"
+                >
+                  Hide
+                </Button>
               </div>
             )}
           </div>

@@ -6,7 +6,7 @@ import { McqCard } from './McqCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, ChevronLeft, ChevronRight, Play, Sparkles } from 'lucide-react';
+import { Loader2, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 
 export function CategoryView() {
   const { selectedCategory, setView, goHome } = useAppStore();
@@ -15,7 +15,6 @@ export function CategoryView() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-  const [generating, setGenerating] = useState(false);
 
   const fetchMcqs = useCallback(async (p: number) => {
     if (!selectedCategory) return;
@@ -40,26 +39,6 @@ export function CategoryView() {
     setPage(1);
   }, [fetchMcqs]);
 
-  const handleGenerateAnswers = async () => {
-    setGenerating(true);
-    try {
-      const res = await fetch('/api/answers/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ limit: 20 })
-      });
-      const data = await res.json();
-      if (data.success) {
-        // Refresh the MCQs
-        fetchMcqs(page);
-      }
-    } catch (error) {
-      console.error('Failed to generate answers:', error);
-    } finally {
-      setGenerating(false);
-    }
-  };
-
   if (!selectedCategory) return null;
 
   return (
@@ -81,16 +60,6 @@ export function CategoryView() {
             </Badge>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleGenerateAnswers}
-              disabled={generating}
-              className="text-amber-600 border-amber-200 hover:bg-amber-50"
-            >
-              <Sparkles className="w-3.5 h-3.5 mr-1" />
-              {generating ? 'Generating...' : 'AI Answers'}
-            </Button>
             <Button
               size="sm"
               onClick={() => setView('quiz-setup')}

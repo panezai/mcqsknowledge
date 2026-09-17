@@ -67,7 +67,7 @@ export function HomeClient({ categories, recentMcqs, totalMcqs, totalCategories 
             Pakistan&apos;s Largest MCQs Website
           </h2>
           <p className="text-white/90 text-lg mb-6 max-w-2xl">
-            Prepare for NTS, FPSC, PPSC, BPSC, SPSC tests with {totalMcqs.toLocaleString()}+ multiple choice questions across {totalCategories}+ subjects.
+            Prepare for NTS, FPSC, PPSC, BPSC, SPSC tests with {totalMcqs.toLocaleString('en-US')}+ multiple choice questions across {totalCategories}+ subjects.
           </p>
 
           {/* Search */}
@@ -95,7 +95,7 @@ export function HomeClient({ categories, recentMcqs, totalMcqs, totalCategories 
             </div>
             <div className="flex items-center gap-2">
               <Brain className="h-5 w-5 text-white/80" />
-              <span className="text-sm text-white/80">{totalMcqs.toLocaleString()}+ MCQs</span>
+              <span className="text-sm text-white/80">{totalMcqs.toLocaleString('en-US')}+ MCQs</span>
             </div>
             <div className="flex items-center gap-2">
               <Trophy className="h-5 w-5 text-white/80" />

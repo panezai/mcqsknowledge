@@ -4,14 +4,14 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="mt-auto bg-[#007540] text-white">
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <footer className="mt-auto bg-[#007540] text-white" suppressHydrationWarning>
+      <div className="container mx-auto px-4 py-6" suppressHydrationWarning>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6" suppressHydrationWarning>
           {/* About */}
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center font-bold">
-                M
+          <div suppressHydrationWarning>
+            <div className="flex items-center gap-2 mb-3" suppressHydrationWarning>
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center font-bold" suppressHydrationWarning>
+                <span>M</span>
               </div>
               <h3 className="font-bold text-lg">MCQs Knowledge</h3>
             </div>
@@ -21,7 +21,7 @@ export function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div suppressHydrationWarning>
             <h3 className="font-bold text-lg mb-3">Quick Links</h3>
             <ul className="space-y-2 text-sm text-white/80">
               <li><Link href="/general_knowledge_mcqs" className="hover:text-white transition-colors">General Knowledge MCQs</Link></li>
@@ -34,7 +34,7 @@ export function Footer() {
           </div>
 
           {/* Features */}
-          <div>
+          <div suppressHydrationWarning>
             <h3 className="font-bold text-lg mb-3">Features</h3>
             <ul className="space-y-2 text-sm text-white/80">
               <li>✅ 37+ Subject Categories</li>
@@ -47,7 +47,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-white/20 text-center text-sm text-white/60">
+        <div className="mt-6 pt-4 border-t border-white/20 text-center text-sm text-white/60" suppressHydrationWarning>
           <p>© 2024 MCQs Knowledge. All rights reserved.</p>
         </div>
       </div>

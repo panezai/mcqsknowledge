@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { scrapePakMcqsSearch, scrapePakMcqsCategory } from '@/lib/scraper';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -13,6 +14,31 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
     const random = searchParams.get('random') === 'true';
     const count = searchParams.get('count');
+
+    // Trigger live scraping if searching or requesting a specific category
+    if (search && search.trim().length > 0) {
+      try {
+        const scrapedMcqs = await scrapePakMcqsSearch(search, 15);
+        if (scrapedMcqs && scrapedMcqs.length > 0) {
+          for (const item of scrapedMcqs) {
+            await db.mcq.create({ data: item });
+          }
+        }
+      } catch (scrapeErr) {
+        console.warn('Live search scraping warning:', scrapeErr);
+      }
+    } else if (category && category.trim().length > 0) {
+      try {
+        const scrapedCategoryMcqs = await scrapePakMcqsCategory(category, 15);
+        if (scrapedCategoryMcqs && scrapedCategoryMcqs.length > 0) {
+          for (const item of scrapedCategoryMcqs) {
+            await db.mcq.create({ data: item });
+          }
+        }
+      } catch (scrapeErr) {
+        console.warn('Live category scraping warning:', scrapeErr);
+      }
+    }
 
     // If just counting
     if (count === 'true') {

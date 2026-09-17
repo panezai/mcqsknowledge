@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://mcqsworld.space-z.ai/sitemap.xml',
+    sitemap: 'https://www.mcqsknowledge.com/sitemap.xml',
   };
 }

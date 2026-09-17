@@ -15,6 +15,7 @@ interface Category {
   slug: string;
   description: string;
   icon: string;
+  order?: number;
   mcqCount: number;
 }
 
@@ -42,36 +43,15 @@ interface CategoryPageClientProps {
 
 export function CategoryPageClient({ category, mcqs, categories, pagination }: CategoryPageClientProps) {
   const { setView, setQuizCategory, setCategories } = useAppStore();
-  const [generating, setGenerating] = useState(false);
 
   const handleStartQuiz = () => {
-    setCategories(categories);
-    setQuizCategory(category);
+    setCategories(categories as any);
+    setQuizCategory(category as any);
     setView('quiz-setup');
   };
 
-  const handleGenerateAnswers = async () => {
-    setGenerating(true);
-    try {
-      const res = await fetch('/api/answers/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ limit: 5 })
-      });
-      const data = await res.json();
-      if (data.success) {
-        // Reload the page to show updated answers
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Failed to generate answers:', error);
-    } finally {
-      setGenerating(false);
-    }
-  };
-
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto" suppressHydrationWarning>
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-gray-500 mb-4">
         <Link href="/" className="hover:text-[#007540] flex items-center gap-1">
@@ -97,16 +77,6 @@ export function CategoryPageClient({ category, mcqs, categories, pagination }: C
             </Badge>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleGenerateAnswers}
-              disabled={generating}
-              className="text-amber-600 border-amber-200 hover:bg-amber-50"
-            >
-              <Sparkles className="w-3.5 h-3.5 mr-1" />
-              {generating ? 'Generating...' : 'AI Answers'}
-            </Button>
             <Button
               size="sm"
               onClick={handleStartQuiz}

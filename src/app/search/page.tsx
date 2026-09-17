@@ -1,6 +1,4 @@
 import { db } from '@/lib/db';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { SearchClient } from '@/components/SearchClient';
 import type { Metadata } from 'next';
 
@@ -11,10 +9,10 @@ export const metadata: Metadata = {
     title: 'Search MCQs - PakMCQs',
     description: 'Search across thousands of MCQs on PakMCQs',
     type: 'website',
-    url: 'https://mcqsworld.space-z.ai/search',
+    url: 'https://www.mcqsknowledge.com/search',
   },
   alternates: {
-    canonical: 'https://mcqsworld.space-z.ai/search',
+    canonical: 'https://www.mcqsknowledge.com/search',
   },
 };
 
@@ -88,18 +86,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-6">
-        <SearchClient
-          initialQuery={query}
-          initialResults={initialResults}
-          initialTotal={initialTotal}
-          initialTotalPages={initialTotalPages}
-          initialPage={page}
-        />
-      </main>
-      <Footer />
-    </div>
+    <SearchClient
+      initialQuery={query}
+      initialResults={initialResults}
+      initialTotal={initialTotal}
+      initialTotalPages={initialTotalPages}
+      initialPage={page}
+    />
   );
 }

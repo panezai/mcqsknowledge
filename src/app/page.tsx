@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "MCQs Knowledge - Pakistan's Largest MCQs Website",
     description: "Prepare for NTS, FPSC, PPSC tests with comprehensive MCQs across 37+ subjects",
     type: "website",
-    url: "https://mcqsworld.space-z.ai",
+    url: "https://www.mcqsknowledge.com",
   },
   twitter: {
     card: "summary",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description: "Prepare for NTS, FPSC, PPSC tests with comprehensive MCQs",
   },
   alternates: {
-    canonical: "https://mcqsworld.space-z.ai",
+    canonical: "https://www.mcqsknowledge.com",
   },
 };
 
@@ -70,11 +70,11 @@ export default async function Home() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'MCQs Knowledge',
-    url: 'https://mcqsworld.space-z.ai',
+    url: 'https://www.mcqsknowledge.com',
     description: "Pakistan's Largest MCQs Website",
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://mcqsworld.space-z.ai/?q={search_term_string}',
+      target: 'https://www.mcqsknowledge.com/?q={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   };
