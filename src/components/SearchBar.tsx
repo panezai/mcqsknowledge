@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Search, X } from 'lucide-react'
@@ -9,13 +10,15 @@ import { useAppStore } from '@/store/useAppStore'
 export default function SearchBar() {
   const { searchQuery, setSearchQuery, setView } = useAppStore()
   const [localQuery, setLocalQuery] = useState(searchQuery)
+  const router = useRouter()
 
   const handleSearch = useCallback(() => {
     if (localQuery.trim()) {
       setSearchQuery(localQuery.trim())
       setView('search')
+      router.push(`/search?q=${encodeURIComponent(localQuery.trim())}`)
     }
-  }, [localQuery, setSearchQuery, setView])
+  }, [localQuery, setSearchQuery, setView, router])
 
   const handleClear = useCallback(() => {
     setLocalQuery('')

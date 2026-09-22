@@ -247563,14 +247563,87 @@ const dbData = {
 };
 let categoriesData: Category[] = [...(dbData.categories as Category[])];
 let mcqsData: Mcq[] = [...(dbData.mcqs as Mcq[])];
+
+const STOP_WORDS = new Set([
+  'a', 'an', 'the', 'is', 'are', 'was', 'were', 'of', 'in', 'on', 'at', 'for', 'to', 'with', 'by', 'about',
+  'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'from', 'up', 'down',
+  'out', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'which', 'what', 'who', 'whom', 'this',
+  'that', 'these', 'those', 'am', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did',
+  'doing', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while'
+]);
+
 function normalizeSearchText(str: string): string {
-  return String(str || '')
-    .toLowerCase()
-    .replace(/[\u2018\u2019`]/g, "'")
-    .replace(/[\u201C\u201D]/g, '"')
-    .replace(/[:?!\,\.\-\(\)]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  if (!str) return '';
+  let s = String(str).toLowerCase();
+  s = s.replace(/&(?:nbsp|amp|quot|lt|gt);/g, ' ');
+  s = s.replace(/&#\d+;/g, ' ');
+  s = s.replace(/[\u2018\u2019`\ufffd\ufffc]/g, "'");
+  s = s.replace(/[\u201C\u201D]/g, '"');
+  s = s.replace(/[^\w\s]/g, ' ');
+  s = s.replace(/\s+/g, ' ').trim();
+  return s;
+}
+
+function scoreMcqSearch(mcq: any, query: string): number {
+  const q_norm = normalizeSearchText(query);
+  if (!q_norm) return 0;
+  
+  let q_words = q_norm.split(' ').filter(w => !STOP_WORDS.has(w));
+  if (q_words.length === 0) q_words = q_norm.split(' ');
+  
+  const question_norm = normalizeSearchText(mcq.question || '');
+  const options_norm = normalizeSearchText(`${mcq.optionA || ''} ${mcq.optionB || ''} ${mcq.optionC || ''} ${mcq.optionD || ''}`);
+  const full_norm = `${question_norm} ${options_norm}`;
+  
+  let score = 0;
+
+  const is_short_single = q_norm.length <= 4 && !q_norm.includes(' ');
+  if (is_short_single) {
+    const qWordsSet = new Set(full_norm.split(' '));
+    if (qWordsSet.has(q_norm)) {
+      score += question_norm.split(' ').includes(q_norm) ? 200 : 100;
+    } else {
+      return 0;
+    }
+  } else {
+    if (question_norm.includes(q_norm)) {
+      score += 200;
+    } else if (options_norm.includes(q_norm)) {
+      score += 100;
+    }
+
+    const full_words_set = new Set(full_norm.split(' '));
+    const matched_words = q_words.filter(w => w.length <= 4 ? full_words_set.has(w) : full_norm.includes(w));
+
+    if (q_words.length === 1) {
+      if (matched_words.length === 1) {
+        score += 50;
+      } else {
+        return 0;
+      }
+    } else {
+      const min_required = q_words.length <= 3 ? q_words.length : q_words.length - 1;
+      if (matched_words.length >= min_required) {
+        score += 40 + (matched_words.length * 10);
+      } else {
+        if (score === 0) return 0;
+      }
+    }
+  }
+  
+  return score;
+}
+
+function extractSearchQueryFromWhere(where: any): string | null {
+  if (!where) return null;
+  if (where.OR && Array.isArray(where.OR)) {
+    for (const sub of where.OR) {
+      if (sub && sub.question && typeof sub.question === 'object' && sub.question.contains) {
+        return sub.question.contains;
+      }
+    }
+  }
+  return null;
 }
 
 function matchesWhere(item: any, where: any): boolean {
@@ -247593,10 +247666,7 @@ function matchesWhere(item: any, where: any): boolean {
         const needle = normalizeSearchText(val.contains);
         const haystack = normalizeSearchText(itemVal);
         if (!haystack.includes(needle)) {
-          const needleWords = needle.split(' ').filter(w => w.length > 3);
-          if (needleWords.length > 0 && !needleWords.some(w => haystack.includes(w))) {
-            return false;
-          }
+          return false;
         }
       } else if ('in' in val && Array.isArray(val.in)) {
         if (!val.in.includes(itemVal)) return false;
@@ -247607,6 +247677,7 @@ function matchesWhere(item: any, where: any): boolean {
   }
   return true;
 }
+
 export const db: any = {
   $disconnect: async () => {},
   category: {
@@ -247664,14 +247735,33 @@ export const db: any = {
   },
   mcq: {
     findMany: async (args: any = {}) => {
-      let list = mcqsData.filter(m => matchesWhere(m, args.where));
-      if (args.orderBy) {
-        if (args.orderBy.createdAt) {
+      const searchQuery = extractSearchQueryFromWhere(args.where);
+      let list = mcqsData;
+
+      if (args.where?.categorySlug) {
+        list = list.filter(m => m.categorySlug === args.where.categorySlug);
+      }
+
+      if (searchQuery) {
+        const scoredList: { score: number; item: Mcq }[] = [];
+        for (const mcq of list) {
+          const score = scoreMcqSearch(mcq, searchQuery);
+          if (score > 0) {
+            scoredList.push({ score, item: mcq });
+          }
+        }
+        scoredList.sort((a, b) => b.score - a.score);
+        list = scoredList.map(s => s.item);
+      } else if (args.where) {
+        list = list.filter(m => matchesWhere(m, args.where));
+        if (args.orderBy && args.orderBy.createdAt) {
           list.sort((a, b) => args.orderBy.createdAt === 'desc' ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() : new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         }
       }
+
       if (args.skip) list = list.slice(args.skip);
       if (args.take) list = list.slice(0, args.take);
+
       return list.map(mcq => {
         const res: any = { ...mcq };
         if (args.include?.category) {
@@ -247692,7 +247782,20 @@ export const db: any = {
       return res;
     },
     count: async (args: any = {}) => {
-      return mcqsData.filter(m => matchesWhere(m, args.where)).length;
+      const searchQuery = extractSearchQueryFromWhere(args.where);
+      let list = mcqsData;
+      if (args.where?.categorySlug) {
+        list = list.filter(m => m.categorySlug === args.where.categorySlug);
+      }
+
+      if (searchQuery) {
+        let count = 0;
+        for (const mcq of list) {
+          if (scoreMcqSearch(mcq, searchQuery) > 0) count++;
+        }
+        return count;
+      }
+      return list.filter(m => matchesWhere(m, args.where)).length;
     },
     update: async (args: any) => {
       const index = mcqsData.findIndex(m => matchesWhere(m, args.where));
