@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { AppShell } from "@/components/AppShell";
@@ -58,6 +59,19 @@ export default function RootLayout({
           {children}
         </AppShell>
         <Toaster />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-YXXPBSHGDF"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-YXXPBSHGDF');
+          `}
+        </Script>
       </body>
     </html>
   );
