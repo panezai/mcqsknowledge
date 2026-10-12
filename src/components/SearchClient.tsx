@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -46,9 +46,21 @@ export function SearchClient({
   const [total, setTotal] = useState(initialTotal);
   const [searched, setSearched] = useState(!!initialQuery);
 
+  useEffect(() => {
+    setQuery(initialQuery);
+    setResults(initialResults);
+    setTotal(initialTotal);
+    setTotalPages(initialTotalPages);
+    setPage(initialPage);
+    setSearched(!!initialQuery);
+  }, [initialQuery, initialResults, initialTotal, initialTotalPages, initialPage]);
+
   const doSearch = useCallback((q: string, p: number) => {
     if (!q.trim()) return;
     setLoading(true);
+    if (typeof window !== 'undefined') {
+      window.history.replaceState(null, '', `/search?q=${encodeURIComponent(q.trim())}&page=${p}`);
+    }
     fetch(`/api/mcqs?search=${encodeURIComponent(q.trim())}&page=${p}&limit=10`)
       .then(res => res.json())
       .then(data => {

@@ -247578,6 +247578,15 @@ const dbData = {
 };
 let categoriesData: Category[] = [...(dbData.categories as Category[])];
 let mcqsData: Mcq[] = [...(dbData.mcqs as Mcq[])];
+
+const STOP_WORDS = new Set([
+  'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from',
+  'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the',
+  'to', 'was', 'were', 'will', 'with', 'the', 'this', 'but', 'they',
+  'have', 'had', 'what', 'when', 'where', 'who', 'which', 'why', 'how',
+  'mcq', 'mcqs', 'question', 'answer'
+]);
+
 function normalizeSearchText(str: string): string {
   if (!str) return '';
   let s = String(str).toLowerCase();
@@ -247585,7 +247594,7 @@ function normalizeSearchText(str: string): string {
   s = s.replace(/&#\d+;/g, ' ');
   s = s.replace(/[\u2018\u2019`\ufffd\ufffc]/g, "'");
   s = s.replace(/[\u201C\u201D]/g, '"');
-  s = s.replace(/[^\w\s]/g, ' ');
+  s = s.replace(/[^\p{L}\p{N}\s]/gu, ' ');
   s = s.replace(/\s+/g, ' ').trim();
   return s;
 }
@@ -247594,8 +247603,8 @@ function scoreMcqSearch(mcq: any, query: string): number {
   const q_norm = normalizeSearchText(query);
   if (!q_norm) return 0;
   
-  let q_words = q_norm.split(' ').filter(w => !STOP_WORDS.has(w));
-  if (q_words.length === 0) q_words = q_norm.split(' ');
+  let q_words = q_norm.split(' ').filter(w => w && !STOP_WORDS.has(w));
+  if (q_words.length === 0) q_words = q_norm.split(' ').filter(Boolean);
   
   const question_norm = normalizeSearchText(mcq.question || '');
   const options_norm = normalizeSearchText(`${mcq.optionA || ''} ${mcq.optionB || ''} ${mcq.optionC || ''} ${mcq.optionD || ''}`);
