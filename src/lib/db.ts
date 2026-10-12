@@ -247558,20 +247558,26 @@ const dbData = {
       "difficulty": "medium",
       "createdAt": 1789633406470,
       "updatedAt": 1789633406470
+    },
+    {
+      "id": "mcq_1791802476187_16480",
+      "question": "Cloudburst usually produces rainfall of ______________?",
+      "optionA": "More than 100 mm per hour",
+      "optionB": "Less than 10 mm per hour",
+      "optionC": "20 mm per day",
+      "optionD": "50 mm per week",
+      "correctAnswer": "More than 100 mm per hour",
+      "categorySlug": "general_knowledge_mcqs",
+      "sourceUrl": "https://pakmcqs.com/general_knowledge_mcqs/cloudburst-usually-produces-rainfall-of-______________",
+      "submittedBy": "Suliman khan sman A cloudburst usually produces rapid and extreme rainfall equal to or greater than ",
+      "difficulty": "medium",
+      "createdAt": 1791802476187,
+      "updatedAt": 1791802476187
     }
   ]
 };
 let categoriesData: Category[] = [...(dbData.categories as Category[])];
 let mcqsData: Mcq[] = [...(dbData.mcqs as Mcq[])];
-
-const STOP_WORDS = new Set([
-  'a', 'an', 'the', 'is', 'are', 'was', 'were', 'of', 'in', 'on', 'at', 'for', 'to', 'with', 'by', 'about',
-  'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'from', 'up', 'down',
-  'out', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'which', 'what', 'who', 'whom', 'this',
-  'that', 'these', 'those', 'am', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did',
-  'doing', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while'
-]);
-
 function normalizeSearchText(str: string): string {
   if (!str) return '';
   let s = String(str).toLowerCase();

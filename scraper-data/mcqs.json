@@ -247183,5 +247183,20 @@
     "difficulty": "medium",
     "createdAt": 1789633406470,
     "updatedAt": 1789633406470
+  },
+  {
+    "id": "mcq_1791802476187_16480",
+    "question": "Cloudburst usually produces rainfall of ______________?",
+    "optionA": "More than 100 mm per hour",
+    "optionB": "Less than 10 mm per hour",
+    "optionC": "20 mm per day",
+    "optionD": "50 mm per week",
+    "correctAnswer": "More than 100 mm per hour",
+    "categorySlug": "general_knowledge_mcqs",
+    "sourceUrl": "https://pakmcqs.com/general_knowledge_mcqs/cloudburst-usually-produces-rainfall-of-______________",
+    "submittedBy": "Suliman khan sman A cloudburst usually produces rapid and extreme rainfall equal to or greater than ",
+    "difficulty": "medium",
+    "createdAt": 1791802476187,
+    "updatedAt": 1791802476187
   }
 ]
