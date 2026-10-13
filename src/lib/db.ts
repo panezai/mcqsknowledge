@@ -247578,15 +247578,6 @@ const dbData = {
 };
 let categoriesData: Category[] = [...(dbData.categories as Category[])];
 let mcqsData: Mcq[] = [...(dbData.mcqs as Mcq[])];
-
-const STOP_WORDS = new Set([
-  'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from',
-  'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the',
-  'to', 'was', 'were', 'will', 'with', 'the', 'this', 'but', 'they',
-  'have', 'had', 'what', 'when', 'where', 'who', 'which', 'why', 'how',
-  'mcq', 'mcqs', 'question', 'answer'
-]);
-
 function normalizeSearchText(str: string): string {
   if (!str) return '';
   let s = String(str).toLowerCase();
